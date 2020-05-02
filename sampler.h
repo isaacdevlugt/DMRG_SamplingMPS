@@ -3,17 +3,12 @@
 
 #include "itensor/all.h"
 #include <cstdlib>
-#include <sstream>
 #include <random>
 #include <fstream>
 #include <iostream>
-
 #include <string>
-#include <iostream>
 #include <vector>
 #include <iomanip>
-
-#include "models.h"
 
 using namespace std;
 using namespace itensor;
@@ -52,16 +47,6 @@ class Sampler {
             basis = bases_[b];
             MPS psi = RotateMPS(basis);
             psi.position(1);
-
-            // check rotated wavefunction
-            //ITensor psi_contract = psi.A(1)*psi.A(2);
-            //auto Inds = psi_contract.inds();
-            //for (int n1 = 1; n1 <= dim(Inds[0]); n1++) {
-            //    for (int n2 = 1; n2 <= dim(Inds[1]); n2++) {
-            //         Print(psi_contract.cplx(Inds[0](n1), Inds[1](n2)));
-            //    }
-            //}
-
 
             for (int j = 0; j < num_samples_; j++) {
                 for (auto i : range1(N_)) {

@@ -3,7 +3,6 @@
 
 #include "itensor/all.h"
 #include <cstdlib>
-#include <sstream>
 #include <random>
 #include <fstream>
 
@@ -80,7 +79,7 @@ class DMRG {
         ampo += -h*2.0,"Sx",N_;
     
         if (BC == "PBC") {
-            ampo += -J,"Sz",1,"Sz",N_;
+            ampo += -J*4.0,"Sz",1,"Sz",N_;
         }
     
         Hamiltonian_ = toMPO(ampo);
