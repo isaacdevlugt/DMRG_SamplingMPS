@@ -2,7 +2,7 @@ import numpy as np
 from qucumber.utils import unitaries
 from itertools import product
 
-# Code is mainly directly from https://github.com/emerali/rand_wvfn_sampler/blob/master/data_gen_py.ipynb
+# Some code directly from https://github.com/emerali/rand_wvfn_sampler/blob/master/data_gen_py.ipynb
 
 '''
 Check sampling algorithm by:
@@ -14,6 +14,7 @@ Check sampling algorithm by:
 
 Do this for every basis
 '''
+
 
 def generate_hilbert_space(size):
     dim = np.arange(2 ** size)
@@ -42,7 +43,7 @@ def gen_inds_from_samples(samples):
 def convert_torch_cplx(tensor):
     real_part = tensor[0].detach().numpy()
     imag_part = tensor[1].detach().numpy()
-    
+
     return real_part + (1j * imag_part)
 
 
@@ -62,19 +63,22 @@ def gen_data(N, num_samples_per_basis, unitary_dict, DMRG_psi, ED_psi):
 
     size = 2 ** N
     vis = generate_hilbert_space(N)
-   
+
     all_bases = gen_all_bases(unitary_dict, N)
-      
+
     tr_bases = np.zeros((len(all_bases), num_sites), dtype=str)
-    samples = np.zeros((len(all_bases), num_samples_per_basis, num_sites), dtype=int)
-    
+    samples = np.zeros(
+        (len(all_bases), num_samples_per_basis, num_sites), dtype=int)
+
     for i, basis in enumerate(tqdm(all_bases)):
         tr_bases[i, :] = np.array(list(basis))
-        samples[i, :, :] = gen_samples(num_samples_per_basis, num_sites, psi, basis, unitary_dict, vis)
-        
-    tr_bases = np.repeat(tr_bases[:, None, :], num_samples_per_basis, axis=1).reshape(-1, num_sites)
+        samples[i, :, :] = gen_samples(
+            num_samples_per_basis, num_sites, psi, basis, unitary_dict, vis)
+
+    tr_bases = np.repeat(
+        tr_bases[:, None, :], num_samples_per_basis, axis=1).reshape(-1, num_sites)
     samples = samples.reshape(-1, num_sites)
-    
+
     all_bases = np.array(list(map(list, all_bases)))
-    
+
     return all_bases, tr_bases, samples, psi
