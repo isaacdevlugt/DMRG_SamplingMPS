@@ -1,0 +1,11 @@
+9
+
+Z Z
+X X
+Y Y
+Z X
+X Z
+Z Y
+Y Z
+Y X
+X Y
