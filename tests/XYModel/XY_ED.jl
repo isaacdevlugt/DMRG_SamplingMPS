@@ -2,6 +2,7 @@ using LinearAlgebra
 using DelimitedFiles
 
 N = 2
+J = -1
 
 Dim = 2^N
 Hamiltonian = zeros(Dim,Dim)
@@ -30,8 +31,9 @@ for Ket = 0:Dim-1
     end
 end
 
-Diag = eigen(Hamiltonian)
+Diag = eigen(J*Hamiltonian)
 GroundState = hcat(Diag.vectors[:, 1], zeros(Dim));
+println(GroundState)
 E0 = Diag.values[1] / N
 E1 = Diag.values[2] / N
 

@@ -19,6 +19,7 @@ using namespace itensor;
 int main() {
 
     int N = 2;
+    int J = -1;
     int num_samples = 10000;
     string bc = "OBC";
     ifstream bases_file("../../bases.txt");
@@ -26,7 +27,7 @@ int main() {
     cout << "Running DMRG..." << endl;   
  
     DMRG dmrg_(N);
-    dmrg_.XY1D(1, bc);
+    dmrg_.XY1D(J, bc);
     dmrg_.InitializeState("neel");
     dmrg_.Run();
 
