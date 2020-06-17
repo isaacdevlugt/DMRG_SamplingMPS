@@ -13,6 +13,9 @@
 using namespace std;
 using namespace itensor;
 
+// TODO: bug when rotating wavefunction (not conserving QNs)
+// bug in hadamard / kadamard when setting matrix elements 
+
 class Sampler
 {
 
@@ -52,6 +55,7 @@ public:
         {
             // generate num_samples samples for all bases
             basis = bases_[b];
+
             MPS psi = RotateMPS(basis);
             psi.position(1);
 
@@ -137,12 +141,13 @@ public:
 
             if (basis[j - 1] != "Z")
             {
-
                 psi.position(j);
                 auto wf = psi.A(j);
-
+                
                 if (basis[j - 1] == "X")
+                {
                     rotation = Hadamard(wf);
+                }
 
                 if (basis[j - 1] == "Y")
                     rotation = dag(Kadamard(wf));
@@ -154,6 +159,18 @@ public:
         }
         return psi;
     }
+
+    void LoadOnlyCompBasis()
+    {
+        // bases_ will only contain "Z"
+        bases_.resize(1, vector<string>(N_));
+
+        for (int j = 0; j < N_; j++)
+        {
+            bases_[0][j] = "Z";
+        }
+    }
+        
 
     void LoadBases(ifstream &bases_file)
     {
