@@ -170,8 +170,10 @@ public:
         //auto q = QN({"Sz",0})
         // TODO: should have Sz=0 conserved here but there is a bug in sampler.h
         // --> sites_ = SpinHalf(N_, {"ConserveQNs=", true});
+        // bug only happens when wanting to sample in other bases
+        // leave true if only Z basis samples
 
-        sites_ = SpinHalf(N_, {"ConserveQNs=", false});
+        sites_ = SpinHalf(N_, {"ConserveQNs=", true});
         auto ampo = AutoMPO(sites_);
 
         for (int j = 1; j < N_; ++j)
