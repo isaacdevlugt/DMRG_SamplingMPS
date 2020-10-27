@@ -17,6 +17,7 @@ class DMRG
     SiteSet sites_;
     MPS psi_;
     double energy_;
+    double abs_magnetization_;
     MPS psi0_;
 
 public:
@@ -30,6 +31,11 @@ public:
     inline double GetEnergy()
     {
         return energy_;
+    }
+
+    inline double GetAbsM()
+    {
+        return abs_magnetization_;
     }
 
     inline SiteSet GetSiteSet()
@@ -296,8 +302,23 @@ public:
 
         auto [energy, psi] = dmrg(Hamiltonian_, psi0_, sweeps, "Quiet");
         psi_ = psi;
+        //sites_ = GetSiteSet();
+        
+        // measure magnetization
+        Real Sz;
+        for (int j = 1; j <= N; ++j) 
+        {
+            psi_.position(j);
+            Real Szj = elt(psi_(j)
+                       * op(sites_, "Sz", j)
+                       * dag(prime(psi_(j), "Site")));
+            Sz += Szj;
+        }
+
+        abs_magnetization_ = abs(Sz) / float(N_);
         energy_ = energy / float(N_);
-        printfln("\nGround State Energy = %.10f", energy / float(N_));
+        printfln("\nGround State E = %.10f", energy_);
+        printfln("\nGround State |M| = %.10f", abs_magnetization_);
     }
 };
 
