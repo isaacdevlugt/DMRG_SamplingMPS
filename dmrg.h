@@ -126,7 +126,7 @@ public:
         Hamiltonian_ = toMPO(ampo);
     }
 
-    void TFIM1D(double h, string BC)
+    void TFIM1D(double J, double h, string BC)
     {
 
         sites_ = SpinHalf(N_, {"ConserveQNs=", false});
@@ -134,14 +134,14 @@ public:
 
         for (int j = 1; j < N_; ++j)
         {
-            ampo += -4.0, "Sz", j, "Sz", j + 1;
+            ampo += -J * 4.0, "Sz", j, "Sz", j + 1;
             ampo += -h * 2.0, "Sx", j;
         }
         ampo += -h * 2.0, "Sx", N_;
 
         if (BC == "PBC")
         {
-            ampo += -4.0, "Sz", 1, "Sz", N_;
+            ampo += -J * 4.0, "Sz", 1, "Sz", N_;
         }
 
         Hamiltonian_ = toMPO(ampo);
@@ -302,11 +302,10 @@ public:
 
         auto [energy, psi] = dmrg(Hamiltonian_, psi0_, sweeps, "Quiet");
         psi_ = psi;
-        //sites_ = GetSiteSet();
         
         // measure magnetization
-        Real Sz;
-        for (int j = 1; j <= N; ++j) 
+        Real Sz;;
+        for (int j = 1; j <= N_; ++j) 
         {
             psi_.position(j);
             Real Szj = elt(psi_(j)
@@ -315,7 +314,7 @@ public:
             Sz += Szj;
         }
 
-        abs_magnetization_ = abs(Sz) / float(N_);
+        abs_magnetization_ = abs(Sz);
         energy_ = energy / float(N_);
         printfln("\nGround State E = %.10f", energy_);
         printfln("\nGround State |M| = %.10f", abs_magnetization_);
